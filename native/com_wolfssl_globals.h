@@ -37,6 +37,7 @@ unsigned int NativePskClientCb(WOLFSSL* ssl, const char* hint, char* identity,
         unsigned int id_max_len, unsigned char* key, unsigned int max_key_len);
 unsigned int NativePskServerCb(WOLFSSL* ssl, const char* identity,
         unsigned char* key, unsigned int max_key_len);
-
+unsigned int NativePskServerTls13Cb(WOLFSSL* ssl, const char* identity,
+        unsigned char* key, unsigned int max_key_len, const char** cipher_list);
 #endif
 

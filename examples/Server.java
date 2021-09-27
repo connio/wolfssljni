@@ -25,6 +25,7 @@ import java.nio.*;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CharacterCodingException;
+import java.util.Arrays;
 
 import com.wolfssl.WolfSSL;
 import com.wolfssl.WolfSSLSession;
@@ -61,7 +62,7 @@ public class Server {
         /* config info */
         boolean useIOCallbacks = false;      /* test I/O callbacks */
         String cipherList = null;            /* default cipher suite list */
-        int sslVersion = 3;                  /* default to TLS 1.2 */
+        int sslVersion = 4;                  /* default to TLS 1.3 */
         int verifyPeer = 1;                  /* verify peer by default */
         int doDTLS = 0;                      /* don't use DTLS by default */
         int useOcsp = 0;                     /* don't use OCSP by default */
@@ -106,7 +107,7 @@ public class Server {
                     if (args.length < i+2)
                         printUsage();
                     sslVersion = Integer.parseInt(args[++i]);
-                    if (sslVersion < 0 || sslVersion > 3) {
+                    if (sslVersion < 0 || sslVersion > 4) {
                         printUsage();
                     }
 
@@ -238,6 +239,9 @@ public class Server {
                 case 3:
                     method = WolfSSL.TLSv1_2_ServerMethod();
                     break;
+                case 4:
+                    method = WolfSSL.TLSv1_3_Method();
+                    break;
                 case -1:
                     method = WolfSSL.DTLSv1_ServerMethod();
                     break;
@@ -297,10 +301,21 @@ public class Server {
 
             /* set cipher list */
             if (cipherList == null) {
-                if (usePsk == 1)
-                    ret = sslCtx.setCipherList("DHE-PSK-AES128-GCM-SHA256");
-                    needDH = 1;
-            } else {
+
+                if (usePsk == 1) {
+                
+                    if (sslVersion == 4) {
+                        /* TLS 1.3 PSK mode */
+                        ret = sslCtx.setCipherList("TLS_AES_128_CCM_SHA256:TLS_AES_128_GCM_SHA256");
+                    } else {
+                        /* <TLS 1.3 PSK mode */
+                        ret = sslCtx.setCipherList("DHE-PSK-AES128-GCM-SHA256");
+                        needDH = 1;
+                    }
+
+                }
+
+            } else {                
                 ret = sslCtx.setCipherList(cipherList);
             }
 
@@ -631,8 +646,8 @@ public class Server {
         System.out.println("Java example server usage:");
         System.out.println("-?\t\tHelp, print this usage");
         System.out.println("-p <num>\tPort to connect to, default 11111");
-        System.out.println("-v <num>\tSSL version [0-3], SSLv3(0) - " +
-                "TLS1.2(3)), default 3");
+        System.out.println("-v <num>\tSSL version [0-4], SSLv3(0) - " +
+                "TLS1.3(4)), default 4");
         System.out.println("-l <str>\tCipher list");
         System.out.println("-c <file>\tCertificate file,\t\tdefault " +
                 "../certs/client-cert.pem");

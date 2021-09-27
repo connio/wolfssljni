@@ -3144,11 +3144,10 @@ JNIEXPORT void JNICALL Java_com_wolfssl_WolfSSLSession_setPskServerCb
     }
 
 #ifndef NO_PSK
-
     if (ssl) {
-        /* set PSK server callback */
-        wolfSSL_set_psk_server_callback((WOLFSSL*)(uintptr_t)ssl,
-                                        NativePskServerCb);
+        wolfSSL_CTX_set_psk_server_tls13_callback((WOLFSSL_CTX*)(uintptr_t)ssl,
+                                                  NativePskServerTls13Cb);
+
     } else {
         (*jenv)->ThrowNew(jenv, excClass,
                 "Input WolfSSLSession object was null when setting "

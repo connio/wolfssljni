@@ -300,13 +300,13 @@ public class WolfSSLContext {
     }
 
     private long internalPskServerCallback(WolfSSLSession ssl,
-            String identity, byte[] key, long keyMaxLen)
+            String identity, byte[] key, long keyMaxLen, StringBuffer cipherList)
     {
         long ret;
 
         /* call user-registered PSK server callback method */
         ret = internPskServerCb.pskServerCallback(ssl, identity,
-                key, keyMaxLen);
+                key, keyMaxLen, cipherList);
 
         return ret;
     }

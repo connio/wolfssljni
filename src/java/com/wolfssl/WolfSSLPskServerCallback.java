@@ -42,15 +42,15 @@ public interface WolfSSLPskServerCallback {
      * PSK server callback method.
      * This method acts as a PSK server callback.
      *
-     * @param ssl       the current SSL session object from which the
-     *                  callback was initiated.
-     * @param identity  client identity
-     * @param key       server key
-     * @param keyMaxLen maximum size in bytes that server key can be
+     * @param ssl        the current SSL session object from which the
+     *                   callback was initiated.
+     * @param identity   client identity
+     * @param key        server key
+     * @param keyMaxLen  maximum size in bytes that server key can be
+     * @param cipherList list of ciphers to be used with PSK TLS 1.3
      *
-     * @return          length of key in octets or 0 for error
+     * @return           length of key in octets or 0 for error
      */
     public long pskServerCallback(WolfSSLSession ssl, String identity,
-            byte[] key, long keyMaxLen);
+            byte[] key, long keyMaxLen, StringBuffer cipherList);
 }
-
